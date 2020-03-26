@@ -25,6 +25,11 @@ import (
 	"github.com/tricksterproxy/mockster/pkg/routes"
 )
 
+const (
+	applicationName    = "mockster"
+	applicationVersion = "1.1.0"
+)
+
 func main() {
 
 	port := "8482"
@@ -32,7 +37,7 @@ func main() {
 		port = os.Args[1]
 	}
 
-	fmt.Println("Starting up Mockster on port", port)
+	fmt.Println("Starting up", applicationName, applicationVersion, "on port", port)
 
 	err := http.ListenAndServe(fmt.Sprintf(":%s", port), routes.GetRouter())
 	if err != nil {

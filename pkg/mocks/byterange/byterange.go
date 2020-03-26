@@ -23,13 +23,14 @@ import (
 	"io"
 	"mime/multipart"
 	"net/textproto"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
 )
 
 // Response Object Data Constants
-const contentLength = int64(1222)
+const contentLength = int64(1224)
 
 // Jan 1 2020 00:00:00 GMT
 var lastModified = time.Unix(1577836800, 0)
@@ -58,13 +59,16 @@ const Body = `Lorem ipsum dolor sit amet, mel alia definiebas ei, labore eligend
 
 ` + `Pri vitae sapientem ad, qui libris prompta ei. Ne quem fabulas dissentiet cum, error ` +
 	`legimus vis cu. Te eum lorem liber aliquando, eirmod diceret vis ad. Eos et facer tation. ` +
-	`Etiam phaedrum ea est, an nec summo mediocritatem.`
+	`Etiam phaedrum ea est, an nec summo mediocritatem.
+
+`
 
 // HTTP Elements
 const hnAcceptRanges = `Accept-Ranges`
 const hnCacheControl = `Cache-Control`
 const hnContentRange = `Content-Range`
 const hnContentType = `Content-Type`
+const hnContentLength = `Content-Length`
 const hnIfModifiedSince = `If-Modified-Since`
 const hnLastModified = `Last-Modified`
 const hnRange = `Range`
@@ -75,9 +79,9 @@ const byteResponsRangePrefix = "bytes "
 
 type byteRanges []byteRange
 
-func (brs byteRanges) validate() bool {
+func (brs byteRanges) validate(cl int64 ) bool {
 	for _, r := range brs {
-		if r.start < 0 || r.end >= contentLength || r.end < r.start {
+		if r.start < 0 || r.end >= cl || r.end < r.start {
 			return false
 		}
 	}
@@ -89,11 +93,11 @@ type byteRange struct {
 	end   int64
 }
 
-func (br byteRange) contentRangeHeader() string {
-	return fmt.Sprintf("%s%d-%d/%d", byteResponsRangePrefix, br.start, br.end, contentLength)
+func (br byteRange) contentRangeHeader(cl int64) string {
+	return fmt.Sprintf("%s%d-%d/%d", byteResponsRangePrefix, br.start, br.end, cl)
 }
 
-func (brs byteRanges) writeMultipartResponse(w io.Writer) error {
+func (brs byteRanges) writeMultipartResponse(cl int64, w io.Writer) error {
 
 	mw := multipart.NewWriter(w)
 	mw.SetBoundary(separator)
@@ -101,13 +105,13 @@ func (brs byteRanges) writeMultipartResponse(w io.Writer) error {
 		pw, err := mw.CreatePart(
 			textproto.MIMEHeader{
 				hnContentType:  []string{contentType},
-				hnContentRange: []string{r.contentRangeHeader()},
+				hnContentRange: []string{r.contentRangeHeader(cl)},
 			},
 		)
 		if err != nil {
 			return err
 		}
-		pw.Write([]byte(Body[r.start : r.end+1]))
+		writeRange(pw, r)
 	}
 	mw.Close()
 	return nil
@@ -152,5 +156,25 @@ func parseRangeHeader(input string) byteRanges {
 		ranges[i].end = end
 	}
 
+	if len(ranges) > 0 {
+		sort.Sort(ranges)
+	}
+
 	return ranges
+}
+
+
+// Len returns the length of a slice of byteRange
+func (brs byteRanges)  Len() int {
+	return len(brs)
+}
+
+// Less returns true if i comes before j
+func (brs byteRanges) Less(i, j int) bool {
+	return brs[i].end < brs[j].end
+}
+
+// Swap modifies a slice of time.Times by swapping the values in indexes i and j
+func (brs byteRanges) Swap(i, j int) {
+	brs[i], brs[j] = brs[j], brs[i]
 }
