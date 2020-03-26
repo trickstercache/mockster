@@ -18,6 +18,7 @@ package byterange
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"strconv"
 	"time"
@@ -124,24 +125,38 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(customCode)
 	}
 
+	cl := contentLength
+
+	if v := r.URL.Query().Get("size"); v != "" {
+		if i, err := strconv.ParseInt(v, 10, 64); err == nil && i > 0 {
+			cl = i
+		}
+	}
+
 	// Handle Range Request Cases
 	if cr := r.Header.Get(hnRange); cr != "" {
 		ranges := parseRangeHeader(cr)
 		lr := len(ranges)
 		if ranges != nil && lr > 0 {
-			if ranges.validate() {
+
+			if ranges[lr-1].end > cl {
+				cl = ranges[lr-1].end
+			}
+
+			if ranges.validate(cl) {
 				// Handle Single Range in Request
 				if lr == 1 {
-					h.Add(hnContentRange, ranges[0].contentRangeHeader())
+					h.Add(hnContentRange, ranges[0].contentRangeHeader(cl))
 					h.Set(hnContentType, contentType)
 					w.WriteHeader(http.StatusPartialContent)
-					fmt.Fprintf(w, Body[ranges[0].start:ranges[0].end+1])
+					writeRange(w, ranges[0])
 					return
 				}
+
 				// Handle Multiple Ranges in Request
 				h.Set(hnContentType, hvMultipartByteRange+separator)
 				w.WriteHeader(http.StatusPartialContent)
-				ranges.writeMultipartResponse(w)
+				ranges.writeMultipartResponse(cl, w)
 				return
 			}
 			w.WriteHeader(http.StatusRequestedRangeNotSatisfiable)
@@ -151,8 +166,40 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Handle Full Body Case
-	h.Set(hnAcceptRanges, "bytes")
+	h.Set(hnContentLength, strconv.Itoa(int(cl)))
 	h.Set(hnContentType, contentType)
-	w.Write([]byte(Body))
+	h.Set(hnAcceptRanges, "bytes")
+
+	j := int64(0)
+	lb := int64(len(Body))
+
+	for int64(j) < cl {
+		if cl-j < lb {
+			w.Write([]byte(Body[:cl-j]))
+		} else {
+			w.Write([]byte(Body))
+		}
+		j += lb
+	}
+
+}
+
+func writeRange(w io.Writer, br byteRange) {
+	if br.end < contentLength {
+		w.Write([]byte(Body[br.start:br.end]))
+		return
+	}
+	cl := br.end - br.start
+	bw := int64(0)
+	offset := br.start % contentLength
+	for bw < cl {
+		left := cl - bw
+		end := contentLength
+		if left < contentLength-offset {
+			end = offset + left
+		}
+		w.Write([]byte(Body[offset:end]))
+		bw += (end - offset)
+		offset = 0
+	}
 }
