@@ -84,16 +84,13 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		// if the client is revalidating and their copy is still fresh
 		// reply w/ a 304 Not Modified
 		if ims := rh.Get(hnIfModifiedSince); ims != "" {
-
 			// for testing a 200 OK only when the user sends an IMS
 			if code, ok := customStatuses[r.URL.Query().Get("ims")]; ok {
 				customCode = code
 				if code == http.StatusOK {
 					rh.Del(hnRange)
 				}
-
 			} else {
-
 				t, err := time.Parse(time.RFC1123, ims)
 				if err == nil && (!lastModified.After(t)) {
 					w.WriteHeader(http.StatusNotModified)
@@ -126,7 +123,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	cl := contentLength
-
 	if v := r.URL.Query().Get("size"); v != "" {
 		if i, err := strconv.ParseInt(v, 10, 64); err == nil && i > 0 {
 			cl = i
@@ -138,11 +134,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		ranges := parseRangeHeader(cr)
 		lr := len(ranges)
 		if ranges != nil && lr > 0 {
-
 			if ranges[lr-1].end > cl {
 				cl = ranges[lr-1].end
 			}
-
 			if ranges.validate(cl) {
 				// Handle Single Range in Request
 				if lr == 1 {
@@ -152,7 +146,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 					writeRange(w, ranges[0])
 					return
 				}
-
 				// Handle Multiple Ranges in Request
 				h.Set(hnContentType, hvMultipartByteRange+separator)
 				w.WriteHeader(http.StatusPartialContent)
@@ -162,7 +155,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusRequestedRangeNotSatisfiable)
 			// TODO: write correct response indictaing what was wrong with the range.
 			return
-
 		}
 	}
 
