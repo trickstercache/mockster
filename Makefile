@@ -46,7 +46,7 @@ go-mod-tidy:
 	$(GO) mod tidy
 
 .PHONY: build
-build:
+build: go-mod-tidy go-mod-vendor
 	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=$(CGO_ENABLED) $(GO) build $(LDFLAGS) -o ./OPATH/mockster -a -v $(MOCKSTER_MAIN)/*.go
 
 .PHONY: install
@@ -54,7 +54,7 @@ install:
 	$(GO) install -o $(MOCKSTER) $(PROGVER)
 
 .PHONY: release
-release: validate-app-version clean release-artifacts # docker docker-release
+release: validate-app-version clean go-mod-tidy go-mod-vendor release-artifacts # docker docker-release
 
 .PHONY: release-artifacts
 release-artifacts: validate-app-version
