@@ -54,7 +54,7 @@ install:
 	$(GO) install -o $(MOCKSTER) $(PROGVER)
 
 .PHONY: release
-release: build release-artifacts docker docker-release
+release: validate-app-version clean release-artifacts # docker docker-release
 
 .PHONY: release-artifacts
 release-artifacts: validate-app-version
