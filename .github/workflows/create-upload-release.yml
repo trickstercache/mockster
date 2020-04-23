@@ -15,7 +15,7 @@ jobs:
         run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       - name: Get bare tag
         id: baretag
-        run: echo "::set-output name=baretag::$(echo ${{ github.ref }} | cut -b 12-)
+        run: echo "::set-output name=baretag::$(echo ${{ github.ref }} | cut -b 12-)"
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Build project
