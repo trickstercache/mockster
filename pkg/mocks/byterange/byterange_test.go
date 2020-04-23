@@ -51,7 +51,7 @@ func TestWriteMultipartResponse(t *testing.T) {
 	buff := make([]byte, 0)
 	w := bytes.NewBuffer(buff)
 
-	err := br.writeMultipartResponse(w)
+	err := br.writeMultipartResponse(100, w)
 	if err != nil {
 		t.Error(err)
 	}
@@ -61,13 +61,13 @@ func TestWriteMultipartResponse(t *testing.T) {
 func TestValidate(t *testing.T) {
 
 	br := parseRangeHeader("bytes=0-10,20-40")
-	v := br.validate()
+	v := br.validate(100)
 	if !v {
 		t.Errorf("expected %t got %t", true, v)
 	}
 
 	br[1].start = 45
-	v = br.validate()
+	v = br.validate(100)
 	if v {
 		t.Errorf("expected %t got %t", false, v)
 	}
