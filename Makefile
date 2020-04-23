@@ -33,8 +33,8 @@ TAGVER         ?= unspecified
 
 .PHONY: validate-app-version
 validate-app-version:
-	@if [ "v$(PROGVER)" != $(TAGVER) ]; then\
-		(echo "mismatch between TAGVER '$(TAGVER)' and applicationVersion 'v$(PROGVER)'"; exit 1);\
+	@if [ "$(PROGVER)" != $(TAGVER) ]; then\
+		(echo "mismatch between TAGVER '$(TAGVER)' and applicationVersion '$(PROGVER)'"; exit 1);\
 	fi
 
 .PHONY: go-mod-vendor
