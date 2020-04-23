@@ -48,16 +48,6 @@ jobs:
           asset_path: ./OPATH/mockster-${{ github.ref }}.linux-arm64.tar.gz
           asset_name: mockster-${{ github.ref }}.linux-arm64.tar.gz
           asset_content_type: application/gzip
-      - name: Upload Release Asset (linux-arm64)
-        id: upload-release-asset-linux-arm64
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./OPATH/mockster-${{ github.ref }}.linux-arm64.tar.gz
-          asset_name: mockster-${{ github.ref }}.linux-arm64.tar.gz
-          asset_content_type: application/gzip
       - name: Upload Release Asset (darwin-amd64)
         id: upload-release-asset-darwin-amd64
         uses: actions/upload-release-asset@v1
