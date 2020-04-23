@@ -26,8 +26,6 @@ BUILD_TIME     := $(shell date -u +%FT%T%z)
 GIT_LATEST_COMMIT_ID     := $(shell git rev-parse HEAD)
 GO_VER         := $(shell go version | awk '{print $$3}')
 LDFLAGS=-ldflags "-s -X main.applicationBuildTime=$(BUILD_TIME) -X main.applicationGitCommitID=$(GIT_LATEST_COMMIT_ID) -X main.applicationGoVersion=$(GO_VER) -X main.applicationGoArch=$(GOARCH)"
-IMAGE_TAG      ?= latest
-IMAGE_ARCH     ?= amd64
 GOARCH         ?= amd64
 TAGVER         ?= unspecified
 
