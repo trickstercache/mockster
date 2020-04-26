@@ -79,7 +79,7 @@ const byteResponsRangePrefix = "bytes "
 
 type byteRanges []byteRange
 
-func (brs byteRanges) validate(cl int64 ) bool {
+func (brs byteRanges) validate(cl int64) bool {
 	for _, r := range brs {
 		if r.start < 0 || r.end >= cl || r.end < r.start {
 			return false
@@ -163,9 +163,8 @@ func parseRangeHeader(input string) byteRanges {
 	return ranges
 }
 
-
 // Len returns the length of a slice of byteRange
-func (brs byteRanges)  Len() int {
+func (brs byteRanges) Len() int {
 	return len(brs)
 }
 

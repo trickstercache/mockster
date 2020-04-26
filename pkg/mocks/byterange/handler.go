@@ -178,7 +178,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func writeRange(w io.Writer, br byteRange) {
 	if br.end < contentLength {
-		w.Write([]byte(Body[br.start:br.end]))
+		w.Write([]byte(Body[br.start : br.end+1]))
 		return
 	}
 	cl := br.end - br.start
@@ -190,7 +190,7 @@ func writeRange(w io.Writer, br byteRange) {
 		if left < contentLength-offset {
 			end = offset + left
 		}
-		w.Write([]byte(Body[offset:end]))
+		w.Write([]byte(Body[offset : end+1]))
 		bw += (end - offset)
 		offset = 0
 	}

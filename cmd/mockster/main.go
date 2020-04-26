@@ -27,7 +27,7 @@ import (
 
 const (
 	applicationName    = "mockster"
-	applicationVersion = "1.1.0"
+	applicationVersion = "1.1.1"
 )
 
 func main() {
