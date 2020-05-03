@@ -3,7 +3,7 @@ on:
     tags:
     - 'v[0-9]+\.[0-9]+\.[0-9]+-(rc|beta)[0-9]+'
 
-name: Create Release and Upload Assets
+name: Create Pre-Release and Upload Assets
 
 jobs:
   build:
@@ -30,7 +30,7 @@ jobs:
           tag_name: ${{ github.ref }}
           release_name: Release v${{ steps.baretag.outputs.baretag }} / ${{ steps.date.outputs.date }}
           draft: false
-          prerelease: false
+          prerelease: true
       - name: Upload Release Asset (linux-amd64)
         id: upload-release-asset-linux-amd64
         uses: actions/upload-release-asset@v1
