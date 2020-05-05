@@ -27,7 +27,7 @@ GIT_LATEST_COMMIT_ID     := $(shell git rev-parse HEAD)
 GO_VER         := $(shell go version | awk '{print $$3}')
 GOARCH         ?= amd64
 TAGVER         ?= unspecified
-LDFLAGS         =-ldflags "-s -X main.applicationBuildTime=$(BUILD_TIME) -X main.applicationGitCommitID=$(GIT_LATEST_COMMIT_ID) -X main.applicationGoVersion=$(GO_VER) -X main.applicationGoArch=$(GOARCH)"
+LDFLAGS         =-ldflags "-extldflags '-static'  -w -s -X main.applicationBuildTime=$(BUILD_TIME) -X main.applicationGitCommitID=$(GIT_LATEST_COMMIT_ID) -X main.applicationGoVersion=$(GO_VER) -X main.applicationGoArch=$(GOARCH)"
 
 .PHONY: validate-app-version
 validate-app-version:
@@ -56,10 +56,10 @@ release: validate-app-version clean go-mod-tidy go-mod-vendor release-artifacts 
 
 .PHONY: release-artifacts
 release-artifacts: validate-app-version
-	GOOS=darwin   GOARCH=amd64 $(GO) build $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).darwin-amd64       -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).darwin-amd64.tar.gz  ./OPATH/mockster-$(PROGVER).darwin-amd64
-	GOOS=linux    GOARCH=amd64 $(GO) build $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).linux-amd64        -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).linux-amd64.tar.gz   ./OPATH/mockster-$(PROGVER).linux-amd64
-	GOOS=linux    GOARCH=arm64 $(GO) build $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).linux-arm64        -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).linux-arm64.tar.gz   ./OPATH/mockster-$(PROGVER).linux-arm64
-	GOOS=windows  GOARCH=amd64 $(GO) build $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).windows-amd64.exe  -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).windows-amd64.tar.gz ./OPATH/mockster-$(PROGVER).windows-amd64.exe
+	CGO_ENABLED=0 GOOS=darwin   GOARCH=amd64 $(GO) build -a $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).darwin-amd64       -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).darwin-amd64.tar.gz  ./OPATH/mockster-$(PROGVER).darwin-amd64
+	CGO_ENABLED=0 GOOS=linux    GOARCH=amd64 $(GO) build -a $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).linux-amd64        -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).linux-amd64.tar.gz   ./OPATH/mockster-$(PROGVER).linux-amd64
+	CGO_ENABLED=0 GOOS=linux    GOARCH=arm64 $(GO) build -a $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).linux-arm64        -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).linux-arm64.tar.gz   ./OPATH/mockster-$(PROGVER).linux-arm64
+	CGO_ENABLED=0 GOOS=windows  GOARCH=amd64 $(GO) build -a $(LDFLAGS) -o ./OPATH/mockster-$(PROGVER).windows-amd64.exe  -a -v $(MOCKSTER_MAIN)/*.go && tar cvfz ./OPATH/mockster-$(PROGVER).windows-amd64.tar.gz ./OPATH/mockster-$(PROGVER).windows-amd64.exe
 
 .PHONY: style
 style:
