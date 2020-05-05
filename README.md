@@ -12,6 +12,61 @@ Mockster is the merger of two previously separate applications (PromSim and Rang
 
 The project provides a standalone server implementation of Mockster. This is useful for backing full simulation environments or running a local background app for querying during development of a data consumer app. You can find it at `github.com/tricksterproxy/mockster/cmd/mockster`, and, from that working directory, simply run `go run main.go \[PORT\]`. If a port number is not provided, it defaults to 8482.
 
+## Running from Docker
+
+We offer Mockster as an image on Docker Hub at `tricksterproxy/mockster`:
+
+```bash
+$ docker run --rm -p 8482:8482 tricksterproxy/mockster:latest &
+  Starting up mockster 1.1.1 on port 8482
+
+
+$ curl -v http://127.0.0.1:8482/prometheus/api/v1/query?query=up
+> GET /prometheus/api/v1/query?query=up HTTP/1.1
+> Host: 127.0.0.1:8482
+> User-Agent: curl/7.64.1
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Content-Type: application/json
+< Date: Tue, 05 May 2020 14:17:10 GMT
+< Content-Length: 117
+<
+{"status":"success","data":{"resultType":"vector","result":[{"metric":{"series_id":"0"},"value":[1588688230,"76"]}]}}
+
+
+$ curl -v -H 'Range: bytes=0-10,12-25' http://127.0.0.1:8482/byterange/test1
+> GET /byterange/test1 HTTP/1.1
+> Host: 127.0.0.1:8482
+> User-Agent: curl/7.64.1
+> Accept: */*
+> Range: bytes=0-10,12-25
+>
+< HTTP/1.1 206 Partial Content
+< Cache-Control: max-age=60
+< Content-Type: multipart/byteranges; boundary=TestRangeServerBoundary
+< Last-Modified: Wed, 01 Jan 2020 00:00:00 UTC
+< Date: Tue, 05 May 2020 14:17:15 GMT
+< Content-Length: 263
+<
+--TestRangeServerBoundary
+Content-Range: bytes 0-10/1224
+Content-Type: text/plain; charset=utf-8
+
+Lorem ipsum
+--TestRangeServerBoundary
+Content-Range: bytes 12-25/1224
+Content-Type: text/plain; charset=utf-8
+
+dolor sit amet
+--TestRangeServerBoundary--
+
+
+$ fg
+$ <ctrl + c>
+
+```
+
 ## Output Formats
 
 Mockster currently supports mocking the following outputs:
