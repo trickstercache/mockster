@@ -10,14 +10,14 @@ Mockster is the merger of two previously separate applications (PromSim and Rang
 
 ## Running as a Standalone App
 
-The project provides a standalone server implementation of Mockster. This is useful for backing full simulation environments or running a local background app for querying during development of a data consumer app. You can find it at `github.com/tricksterproxy/mockster/cmd/mockster`, and, from that working directory, simply run `go run main.go \[PORT\]`. If a port number is not provided, it defaults to 8482.
+The project provides a standalone server implementation of Mockster. This is useful for backing full simulation environments or running a local background app for querying during development of a data consumer app. You can find it at `github.com/trickstercache/mockster/cmd/mockster`, and, from that working directory, simply run `go run main.go \[PORT\]`. If a port number is not provided, it defaults to 8482.
 
 ## Running from Docker
 
-We offer Mockster as an image on Docker Hub at `tricksterproxy/mockster`:
+We offer Mockster as an image on Docker Hub at `trickstercache/mockster`:
 
 ```bash
-$ docker run --rm -p 8482:8482 tricksterproxy/mockster:latest &
+$ docker run --rm -p 8482:8482 trickstercache/mockster:latest &
   Starting up mockster 1.1.1 on port 8482
 
 

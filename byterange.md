@@ -21,7 +21,7 @@ Example paths:
     - `/byterange/`
     - `/byterange/tests/testCacheMissWithRange`
 
-For examples of using mockster/byterange for Unit Testing, see the [Trickster Unit Tests](https://github.com/tricksterproxy/trickster/blob/master/internal/proxy/engines/objectproxycache_test.go)
+For examples of using mockster/byterange for Unit Testing, see the [Trickster Unit Tests](https://github.com/trickstercache/trickster/blob/master/internal/proxy/engines/objectproxycache_test.go)
 
 ## Example Usage
 
