@@ -1,3 +1,3 @@
-module github.com/tricksterproxy/mockster
+module github.com/trickstercache/mockster
 
 go 1.14

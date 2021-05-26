@@ -11,7 +11,7 @@ RUN chown nobody:nogroup /usr/local/bin/mockster && chmod +x /usr/local/bin/mock
 FROM ${IMAGE_ARCH}/alpine:3
 LABEL maintainer "The Trickster Authors <trickster-developers@googlegroups.com>"
 
-# expects that you are in in $src/github.com/tricksterproxy/mockster
+# expects that you are in in $src/github.com/trickstercache/mockster
 # and have already ran "make release" for binaries to reside in OPATH
 COPY  --from=permer /usr/local/bin/mockster /usr/local/bin/mockster
 COPY LICENSE                                /LICENSE

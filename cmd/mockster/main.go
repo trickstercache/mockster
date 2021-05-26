@@ -22,12 +22,12 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/tricksterproxy/mockster/pkg/routes"
+	"github.com/trickstercache/mockster/pkg/routes"
 )
 
 const (
 	applicationName    = "mockster"
-	applicationVersion = "1.1.1"
+	applicationVersion = "1.1.2"
 )
 
 func main() {

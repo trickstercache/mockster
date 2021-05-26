@@ -19,7 +19,7 @@ import (
     "net/http"
     "testing"
 
-    "github.com/tricksterproxy/mockster/pkg/testutil"
+    "github.com/trickstercache/mockster/pkg/testutil"
 )
 
 func TestMocksterPromethues(t *testing.T) {

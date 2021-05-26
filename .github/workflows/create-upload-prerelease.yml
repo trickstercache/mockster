@@ -78,12 +78,12 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: tricksterio/mockster
           tags: ${{ steps.baretag.outputs.baretag }}
-      - name: build-push-tricksterproxy-amd
+      - name: build-push-trickstercache-amd
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: tricksterproxy/mockster
+          repository: trickstercache/mockster
           tags: ${{ steps.baretag.outputs.baretag }}
       - name: build-push-tricksterio-arm
         uses: docker/build-push-action@v1
@@ -93,11 +93,11 @@ jobs:
           repository: tricksterio/mockster
           build_args: IMAGE_ARCH=arm64v8,GOARCH=arm64
           tags: arm64v8-${{ steps.baretag.outputs.baretag }}
-      - name: build-push-tricksterproxy-arm
+      - name: build-push-trickstercache-arm
         uses: docker/build-push-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: tricksterproxy/mockster
+          repository: trickstercache/mockster
           build_args: IMAGE_ARCH=arm64v8,GOARCH=arm64
           tags: arm64v8-${{ steps.baretag.outputs.baretag }}
