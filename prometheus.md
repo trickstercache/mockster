@@ -15,7 +15,7 @@ mockster/byterange only uses builtin golang packages and should thus work out-of
 package mypackage
 
 import (
-    "io/ioutil"
+    "io"
     "net/http"
     "testing"
 
@@ -32,7 +32,7 @@ func TestMocksterPromethues(t *testing.T) {
         t.Error(err)
     }
 
-    body, err := ioutil.ReadAll(resp.Body)
+    body, err := io.ReadAll(resp.Body)
     if err != nil {
         t.Error(err)
     }
